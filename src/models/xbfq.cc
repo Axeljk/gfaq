@@ -94,7 +94,7 @@ void xbfq::ReadAll(const bool &silent) {
 		else if (ReadTag(tag, careers, silent)) { }
 		else if (ReadTag(tag, effects, silent)) { }
 		else if (ReadTag(tag, spells, silent)) {
-			for (spell &i : spells) {
+			for (spell_base &i : spells) {
 				for ( uint8_t j = 0; j < i.effect_count_; ++j) {
 					i.effects_[j].e = effects.Find(i.effects_[j].effect_id);
 				}

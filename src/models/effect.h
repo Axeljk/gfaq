@@ -11,11 +11,11 @@
 struct actor;
 /*******************************************************************************
 *                                                                              *
-*                                    Effect                                    *
+*                                  Effect_Base                                 *
 *                                                                              *
 *******************************************************************************/
-struct effect {
-	static const uint16_t kEffectSize = 23;
+struct effect_base {
+	static const uint16_t kEffectBaseSize = 23;
 
 	pstr<uint8_t> name, description;
 	bool (*Apply)(actor*, actor*);
@@ -28,11 +28,11 @@ struct effect {
 
 	const uint32_t CalcCost(const uint32_t &b, const uint32_t &m, const uint32_t &d, const uint32_t &a);
 
-	effect& operator=(const effect &e);
-	friend std::ostream& operator<<(std::ostream &out, const effect &e);
-	friend std::istream& operator>>(std::istream &in, effect &e);
+	effect_base& operator=(const effect_base &e);
+	friend std::ostream& operator<<(std::ostream &out, const effect_base &e);
+	friend std::istream& operator>>(std::istream &in, effect_base &e);
 
-	effect()
+	effect_base()
 		: Apply(NULL)
 		, Tick(NULL)
 		, Remove(NULL)
@@ -42,7 +42,7 @@ struct effect {
 		, base_cost_magnitude_(0)
 		, base_cost_duration_(0)
 		, base_cost_area_(0) { }
-	effect(const uint32_t &i, const char *n, const char *d, const uint8_t &e)
+	effect_base(const uint32_t &i, const char *n, const char *d, const uint8_t &e)
 		: name(n)
 		, description(d)
 		, Apply(NULL)
@@ -54,9 +54,10 @@ struct effect {
 		, base_cost_magnitude_(0)
 		, base_cost_duration_(0)
 		, base_cost_area_(0) { }
-	~effect() { }
+	~effect_base() { }
 
 	private:
+		friend struct effect;
 		template<class t> friend struct record;
 		uint32_t id_;
 		uint8_t element_;
@@ -64,8 +65,13 @@ struct effect {
 		
 };
 
-struct effect_profile {
-	static const uint16_t kEffectProfileSize = 17;
+/*******************************************************************************
+*                                                                              *
+*                                    Effect                                    *
+*                                                                              *
+*******************************************************************************/
+struct effect {
+	static const uint16_t kEffectSize = 17;
 
 	enum Types {
 		kSelf,
@@ -73,34 +79,34 @@ struct effect_profile {
 		kArea
 	};
 
-	const effect *e;
+	const effect_base *e;
 	uint32_t effect_id;
 
-	const effect* Effect() const;
+	const effect_base* EffectBase() const;
 	const size_t Size() const;
 
-	effect_profile& operator=(const effect_profile &e);
-	friend std::ostream& operator<<(std::ostream &out, const effect_profile &e);
-	friend std::istream& operator>>(std::istream &in, effect_profile &e);
+	effect& operator=(const effect &e);
+	friend std::ostream& operator<<(std::ostream &out, const effect &e);
+	friend std::istream& operator>>(std::istream &in, effect &e);
 
-	effect_profile()
+	effect()
 		: e(NULL)
 		, effect_id(0)
 		, type_(0)
 		, magnitude_(0)
 		, duration_(0)
 		, area_(0) { }
-	effect_profile(const effect *e, const uint8_t &t, const uint32_t &m, const uint32_t &d, const uint32_t &a)
+	effect(const effect_base *e, const uint8_t &t, const uint32_t &m, const uint32_t &d, const uint32_t &a)
 		: e(e)
 		, effect_id(e->ID())
 		, type_(t)
 		, magnitude_(m)
 		, duration_(d)
 		, area_(a) { }
-	~effect_profile() { }
+	~effect() { }
 
 	private:
-		friend struct effect;
+		friend struct effect_base;
 		friend int main();
 
 		uint8_t type_;
