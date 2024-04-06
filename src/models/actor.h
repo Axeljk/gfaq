@@ -2,12 +2,18 @@
 
 
 #include <cstdint>
+<<<<<<< HEAD
 #include <initializer_list>
+=======
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 #include <iosfwd>
 
 #include "element.h"
 #include "pstr.h"
+<<<<<<< HEAD
 #include "spell.h"
+=======
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 #include "stat.h"
 
 
@@ -27,7 +33,11 @@ namespace gender {
 }
 
 struct actor {
+<<<<<<< HEAD
 	static const uint16_t kActorSize = 147;
+=======
+	static const uint16_t kActorSize = 145;
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 
 	pstr<uint8_t> name;
 	bool gender, playable;
@@ -42,7 +52,10 @@ struct actor {
 
 	const uint32_t ID() const;
 	const uint32_t get_level() const;
+<<<<<<< HEAD
 	const spell* SpellBook() const;
+=======
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 
 	void Level(const int &x);
 	void PickRace(const race *ra);
@@ -82,18 +95,26 @@ struct actor {
 			element(elements::kLightName, 128),
 			element(elements::kDarkName, 128),
 			element(elements::kArcaneName, 128)})
+<<<<<<< HEAD
 		, id_(0)
 		, spell_count_(0)
 		, affliction_count_(0)
 		, spellbook_(NULL)
 		, afflictions_(NULL) {
+=======
+		, id_(0) {
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 				str.Link(&hp, &ad, &en, &as);
 				wis.Link(&en, &ac, &ad, &re);
 				agi.Link(&re, &as, &hp, &ac);
 			}
 	actor(const uint32_t &i, const bool &play, const int &lvl, const char *n,
 		  const bool &g, const race *ra, const career *ca, const aspect *virtue,
+<<<<<<< HEAD
 		  const aspect *vice, const std::initializer_list<spell> &sb)
+=======
+		  const aspect *vice)
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 		: name(n)
 		, gender(g)
 		, playable(play)
@@ -120,10 +141,14 @@ struct actor {
 			element(elements::kLightName, 128),
 			element(elements::kDarkName, 128),
 			element(elements::kArcaneName, 128)})
+<<<<<<< HEAD
 		, id_(i) 
 		, spell_count_(sb.size())
 		, affliction_count_(0)
 		, afflictions_(NULL) {
+=======
+		, id_(i) {
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 			str.Link(&hp, &ad, &en, &as);
 			wis.Link(&en, &ac, &ad, &re);
 			agi.Link(&re, &as, &hp, &ac);
@@ -131,9 +156,12 @@ struct actor {
 			PickCareer(ca);
 			PickVirtueVice(virtue, vice);
 			Level(lvl);
+<<<<<<< HEAD
 			spellbook_ = new spell[spell_count_];
 			for (uint8_t i = 0; i < spell_count_; ++i)
 				spellbook_[i] = sb.begin()[i];
+=======
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 		}
 	actor(const actor &a)
 		: name(a.name)
@@ -155,11 +183,16 @@ struct actor {
 		, as(a.as, &agi, &str)
 		, ac(a.ac, &wis, &agi)
 		, elements(a.elements)
+<<<<<<< HEAD
 		, id_(a.id_) 
 		, spell_count_(a.spell_count_)
 		, affliction_count_(a.affliction_count_)
 		, spellbook_(a.spellbook_)
 		, afflictions_(a.afflictions_) {
+=======
+		, id_(a.id_)
+		{
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 			str.Link(&hp, &ad, &en, &as);
 			wis.Link(&en, &ac, &ad, &re);
 			agi.Link(&re, &as, &hp, &ac);
@@ -167,6 +200,7 @@ struct actor {
 	~actor() { }
 
 	private:
+<<<<<<< HEAD
 		friend class battle;
 		template<class t> friend class record;
 		friend class xbfq;
@@ -175,4 +209,8 @@ struct actor {
 		uint8_t spell_count_, affliction_count_;
 		spell *spellbook_;
 		effect *afflictions_;
+=======
+		template<class t> friend class record;
+		uint32_t id_;
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 };

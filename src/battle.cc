@@ -226,9 +226,13 @@ void battle::PlayerInput(actor *p, motive &m) {
 			actor *target = GetTarget(p, m, input);
 			m = motive(p, target, motives + player->count + input, actions::kAttack);
 		} else if (input == 1) {
+<<<<<<< HEAD
 			spell *casted = GetSpell(p, m, input);
 			actor *target = GetTarget(p, m, input);
 			m = motive(p, target, motives + player->count + input, actions::kCast);
+=======
+			m = motive(p, p, motives, actions::kIdle);
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 		} else if (input == 2) {
 			m = motive(p, p, motives, actions::kDefend);
 		} else if (input == 666) {
@@ -260,6 +264,7 @@ actor* battle::GetTarget(actor *p, motive &m, int &i) {
 	}
 	return NULL;
 }
+<<<<<<< HEAD
 spell* battle::GetSpell(actor *p, motive &m, int &i) {
 	int selection = -1;
 
@@ -280,6 +285,8 @@ spell* battle::GetSpell(actor *p, motive &m, int &i) {
 	}
 	return NULL;
 }
+=======
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 double battle::StatPercent(stat_base *a, stat_base *b) {
 	return (static_cast<double>(a->get()) - static_cast<double>(b->get())) / (static_cast<double>(a->get()) + static_cast<double>(b->get())) / 2.0 + 0.5;
 }

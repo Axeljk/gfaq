@@ -112,11 +112,19 @@ template <class t> struct record {
 struct actor;
 struct blurb;
 struct career;
+<<<<<<< HEAD
 struct effect_base;
 struct effect_profile;
 struct party;
 struct race;
 struct spell_base;
+=======
+struct effect;
+struct effect_profile;
+struct party;
+struct race;
+struct spell;
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 /*******************************************************************************
 *                                                                              *
 *                                     xBFQ                                     *
@@ -150,9 +158,15 @@ class xbfq {
 		/* Public data. */
 		record<race> races;
 		record<career> careers;
+<<<<<<< HEAD
 		record<effect_base> effects;
 //		record<effect_profile> effect_profiles;
 		record<spell_base> spells;
+=======
+		record<effect> effects;
+//		record<effect_profile> effect_profiles;
+		record<spell> spells;
+>>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 		record<actor> actors;
 		record<party> parties;
 		record<blurb> blurbs;
