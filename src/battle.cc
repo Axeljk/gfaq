@@ -226,7 +226,9 @@ void battle::PlayerInput(actor *p, motive &m) {
 			actor *target = GetTarget(p, m, input);
 			m = motive(p, target, motives + player->count + input, actions::kAttack);
 		} else if (input == 1) {
-			m = motive(p, p, motives, actions::kIdle);
+			spell *casted = GetSpell(p, m, input);
+			actor *target = GetTarget(p, m, input);
+			m = motive(p, target, motives + player->count + input, actions::kCast);
 		} else if (input == 2) {
 			m = motive(p, p, motives, actions::kDefend);
 		} else if (input == 666) {
@@ -252,6 +254,26 @@ actor* battle::GetTarget(actor *p, motive &m, int &i) {
 		if (selection < enemies->count && selection >= 0)
 			return enemies->members[selection];
 		else if (selection == enemies->count) {
+			i = -1;
+			return NULL;
+		}
+	}
+	return NULL;
+}
+spell* battle::GetSpell(actor *p, motive &m, int &i) {
+	int selection = -1;
+
+	while (selection > p->spell_count_ || selection < 0) {
+		NewScreen();
+		CharGen::Header(p);
+		std::cout << "\n\tSelect Spell:\n\t  ";
+		for (int i = 0; i < p->spell_count_; ++i)
+			std::cout << i << ") " <<p->spellbook_[i].SpellBase()->name << "\n\t  ";
+		std::cout << static_cast<int>(p->spell_count_) << ") Go back\n\t  ";
+		std::cin >> selection;
+		if (selection < p->spell_count_ && selection >= 0)
+			return &(p->spellbook_[selection]);
+		else if (selection == p->spell_count_) {
 			i = -1;
 			return NULL;
 		}

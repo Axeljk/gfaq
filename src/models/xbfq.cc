@@ -23,7 +23,7 @@
 
 /* Static members defined in xbfq.h. */
 const char xbfq::kMagicNumber[4] = { 0x78, 0x42, 0x46, 0x51 };			 // xBFQ
-const char xbfq::kFormatVersion[3] = { 0x00, 0x00, 0x01 };				 //  001
+const char xbfq::kFormatVersion[3] = { 0x00, 0x00, 0x02 };				 //  002
 const char xbfq::kFileExtension[4] = { 0x2E, 0x62, 0x66, 0x71 };		 // .bfq
 const char xbfq::kMasterFile[4] = { 0x63, 0x6F, 0x72, 0x65 };			 // core
 const char xbfq::kTagActor[4] = { 0x41, 0x43, 0x54, 0x52 };				 // ACTR
@@ -42,7 +42,7 @@ void xbfq::Close() {
 	temp_file_.close();
 }
 std::string xbfq::CoreFile() {
-	return std::string().append(kMasterFile, 4).append(kFileExtension, 4);
+	return std::string(kMasterFile, 4);
 }
 void xbfq::DefineCurrentDirectory() {
 	base_directory_ = GetDirectory(NULL, 0);
@@ -104,6 +104,8 @@ void xbfq::ReadAll(const bool &silent) {
 			for (actor &i : actors) {
 				i.r = races.Find(i.race_id);
 				i.c = careers.Find(i.career_id);
+				for (uint8_t j = 0; j < i.spell_count_; ++j)
+					i.spellbook_[j].s_ = spells.Find(i.spellbook_[j].id_);
 			}
 		} else if (ReadTag(tag, parties, silent)) {
 			for ( party &i : parties) {
@@ -169,6 +171,7 @@ void xbfq::Write(const bool &silent) {
 				  << "\n\n\n";
 	}
 
+	std::cout << "ABOUT TO WRITE THE STUFF" << std::endl;
 	/* Organize data. */
 	RestructureIDs();
 

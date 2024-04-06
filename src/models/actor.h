@@ -2,10 +2,12 @@
 
 
 #include <cstdint>
+#include <initializer_list>
 #include <iosfwd>
 
 #include "element.h"
 #include "pstr.h"
+#include "spell.h"
 #include "stat.h"
 
 
@@ -25,7 +27,7 @@ namespace gender {
 }
 
 struct actor {
-	static const uint16_t kActorSize = 145;
+	static const uint16_t kActorSize = 147;
 
 	pstr<uint8_t> name;
 	bool gender, playable;
@@ -40,6 +42,7 @@ struct actor {
 
 	const uint32_t ID() const;
 	const uint32_t get_level() const;
+	const spell* SpellBook() const;
 
 	void Level(const int &x);
 	void PickRace(const race *ra);
@@ -79,14 +82,18 @@ struct actor {
 			element(elements::kLightName, 128),
 			element(elements::kDarkName, 128),
 			element(elements::kArcaneName, 128)})
-		, id_(0) {
+		, id_(0)
+		, spell_count_(0)
+		, affliction_count_(0)
+		, spellbook_(NULL)
+		, afflictions_(NULL) {
 				str.Link(&hp, &ad, &en, &as);
 				wis.Link(&en, &ac, &ad, &re);
 				agi.Link(&re, &as, &hp, &ac);
 			}
 	actor(const uint32_t &i, const bool &play, const int &lvl, const char *n,
 		  const bool &g, const race *ra, const career *ca, const aspect *virtue,
-		  const aspect *vice)
+		  const aspect *vice, const std::initializer_list<spell> &sb)
 		: name(n)
 		, gender(g)
 		, playable(play)
@@ -113,7 +120,10 @@ struct actor {
 			element(elements::kLightName, 128),
 			element(elements::kDarkName, 128),
 			element(elements::kArcaneName, 128)})
-		, id_(i) {
+		, id_(i) 
+		, spell_count_(sb.size())
+		, affliction_count_(0)
+		, afflictions_(NULL) {
 			str.Link(&hp, &ad, &en, &as);
 			wis.Link(&en, &ac, &ad, &re);
 			agi.Link(&re, &as, &hp, &ac);
@@ -121,6 +131,9 @@ struct actor {
 			PickCareer(ca);
 			PickVirtueVice(virtue, vice);
 			Level(lvl);
+			spellbook_ = new spell[spell_count_];
+			for (uint8_t i = 0; i < spell_count_; ++i)
+				spellbook_[i] = sb.begin()[i];
 		}
 	actor(const actor &a)
 		: name(a.name)
@@ -142,8 +155,11 @@ struct actor {
 		, as(a.as, &agi, &str)
 		, ac(a.ac, &wis, &agi)
 		, elements(a.elements)
-		, id_(a.id_)
-		{
+		, id_(a.id_) 
+		, spell_count_(a.spell_count_)
+		, affliction_count_(a.affliction_count_)
+		, spellbook_(a.spellbook_)
+		, afflictions_(a.afflictions_) {
 			str.Link(&hp, &ad, &en, &as);
 			wis.Link(&en, &ac, &ad, &re);
 			agi.Link(&re, &as, &hp, &ac);
@@ -151,6 +167,12 @@ struct actor {
 	~actor() { }
 
 	private:
+		friend class battle;
 		template<class t> friend class record;
+		friend class xbfq;
+		friend int main();
 		uint32_t id_;
+		uint8_t spell_count_, affliction_count_;
+		spell *spellbook_;
+		effect *afflictions_;
 };

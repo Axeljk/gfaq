@@ -80,7 +80,7 @@ const spell_base* spell::SpellBase() const {
 	return s_;
 }
 const uint32_t spell::ID() const {
-	return s_->ID();
+	return id_;
 }
 const size_t spell::Size() const {
 	return kSpellSize;
@@ -108,13 +108,13 @@ spell& spell::operator=(const spell &s) {
 	return *this;
 }
 std::ostream& operator<<(std::ostream &out, const spell &s) {
-	out.write(reinterpret_cast<const char *>(s.s_->ID()), 4);
+	out.write(reinterpret_cast<const char *>(&s.id_), 4);
 	out.write(reinterpret_cast<const char *>(&s.experience_), 4);
 
 	return out;
 }
 std::istream& operator>>(std::istream &in, spell &s) {
-	in.read(reinterpret_cast<char *>(s.s_->ID()), 4);
+	in.read(reinterpret_cast<char *>(&s.id_), 4);
 	in.read(reinterpret_cast<char *>(&s.experience_), 4);
 
 	return in;

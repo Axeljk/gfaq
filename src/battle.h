@@ -1,7 +1,7 @@
 #pragma once
 
 
-//#include "models/party.h"
+//#include` "models/party.h"
 //#include "models/stat.h"
 #include "models/xbfq.h"
 #include "motive.h"
@@ -10,6 +10,7 @@
 
 struct actor;
 struct party;
+struct spell;
 struct stat_aux;
 
 struct battle {
@@ -31,6 +32,7 @@ struct battle {
 	void ActionReport();
 	void PlayerInput(actor *p, motive &m);
 	actor* GetTarget(actor *p, motive &m, int &i);
+	spell* GetSpell(actor *p, motive &m, int &i);
 	double StatPercent(stat_base *a, stat_base *b);
 	void LevelStat(const actor &act, const uint32_t x, stat_aux *a, stat_aux *b);
 	void EnCost(actor *a, const uint32_t &cost);

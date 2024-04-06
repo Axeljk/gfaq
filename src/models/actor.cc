@@ -1,10 +1,11 @@
 #include "actor.h"
 
+#include <algorithm>					// std::copy
+#include <iostream>						// iostream overloads.
+
 #include "aspect.h"
 #include "career.h"
 #include "race.h"
-
-#include <iostream>
 
 
 const uint32_t actor::ID() const {
@@ -21,6 +22,10 @@ const uint32_t actor::get_level() const {
 
 	return static_cast<uint32_t>(total_xp);
 }
+const spell* actor::SpellBook() const {
+	return spellbook_;
+}
+
 void actor::Level(const int &x) {
 	for (int i = 0; i < x; ++i) {
 		str.Level(0x01000000);
@@ -75,7 +80,7 @@ void actor::Restore() {
 	ac.Restore();
 }
 const size_t actor::Size() const {
-	return kActorSize + name.Size();
+	return kActorSize + name.Size() + (spell::kSpellSize * spell_count_);
 }
 
 actor& actor::operator=(const actor &a) {
@@ -104,6 +109,9 @@ actor& actor::operator=(const actor &a) {
 		elements[4] = a.elements[4];
 		elements[5] = a.elements[5];
 		elements[6] = a.elements[6];
+		spell_count_ = a.spell_count_;
+		affliction_count_ = a.affliction_count_;
+		std::copy(a.spellbook_, a.spellbook_ + spell_count_, spellbook_);
 	}
 
 	return *this;
@@ -111,6 +119,7 @@ actor& actor::operator=(const actor &a) {
 std::ostream& operator<<(std::ostream &out, const actor &a) {
 	uint16_t actor_size = a.Size();
 
+	std::cout << "WRITING ACTOR" << std::endl;
 	out.write(reinterpret_cast<const char *>(&actor_size), 2);
 	out.write(reinterpret_cast<const char *>(&a.id_), 4);
 	out << a.name;
@@ -136,6 +145,11 @@ std::ostream& operator<<(std::ostream &out, const actor &a) {
 	out << a.elements[4];
 	out << a.elements[5];
 	out << a.elements[6];
+	out.write(reinterpret_cast<const char *>(&a.spell_count_), 1);
+	if (a.spell_count_ > 0) {
+		for (uint8_t i = 0; i < a.spell_count_; ++i)
+			out << a.spellbook_[i];
+	}
 
 	return out;
 }
@@ -170,6 +184,12 @@ std::istream& operator>>(std::istream &in, actor &a) {
 	in >> a.elements[4];
 	in >> a.elements[5];
 	in >> a.elements[6];
+	in.read(reinterpret_cast<char *>(&a.spell_count_), 1);
+	if (a.spell_count_ > 0) {
+		a.spellbook_ = new spell[a.spell_count_];
+		for (uint8_t i = 0; i < a.spell_count_; ++i)
+			in >> a.spellbook_[i];
+	}
 
 	return in;
 }

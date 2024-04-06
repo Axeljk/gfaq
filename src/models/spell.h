@@ -82,9 +82,11 @@ struct spell {
 
 	spell()
 		: s_(NULL)
+		, id_(0)
 		, experience_(0) { }
 	spell(const spell_base *s, const uint32_t &e)
 		: s_(s)
+		, id_(s->id_)
 		, experience_(e) { }
 	~spell() { }
 
@@ -95,5 +97,5 @@ struct spell {
 		friend int main();
 
 		const spell_base *s_;
-		uint32_t experience_;
+		uint32_t id_, experience_;
 };
