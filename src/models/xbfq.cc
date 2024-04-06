@@ -23,11 +23,7 @@
 
 /* Static members defined in xbfq.h. */
 const char xbfq::kMagicNumber[4] = { 0x78, 0x42, 0x46, 0x51 };			 // xBFQ
-<<<<<<< HEAD
 const char xbfq::kFormatVersion[3] = { 0x00, 0x00, 0x02 };				 //  002
-=======
-const char xbfq::kFormatVersion[3] = { 0x00, 0x00, 0x01 };				 //  001
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 const char xbfq::kFileExtension[4] = { 0x2E, 0x62, 0x66, 0x71 };		 // .bfq
 const char xbfq::kMasterFile[4] = { 0x63, 0x6F, 0x72, 0x65 };			 // core
 const char xbfq::kTagActor[4] = { 0x41, 0x43, 0x54, 0x52 };				 // ACTR
@@ -46,11 +42,7 @@ void xbfq::Close() {
 	temp_file_.close();
 }
 std::string xbfq::CoreFile() {
-<<<<<<< HEAD
 	return std::string(kMasterFile, 4);
-=======
-	return std::string().append(kMasterFile, 4).append(kFileExtension, 4);
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 }
 void xbfq::DefineCurrentDirectory() {
 	base_directory_ = GetDirectory(NULL, 0);
@@ -102,11 +94,7 @@ void xbfq::ReadAll(const bool &silent) {
 		else if (ReadTag(tag, careers, silent)) { }
 		else if (ReadTag(tag, effects, silent)) { }
 		else if (ReadTag(tag, spells, silent)) {
-<<<<<<< HEAD
 			for (spell_base &i : spells) {
-=======
-			for (spell &i : spells) {
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 				for ( uint8_t j = 0; j < i.effect_count_; ++j) {
 					i.effects_[j].e = effects.Find(i.effects_[j].effect_id);
 				}
@@ -116,11 +104,8 @@ void xbfq::ReadAll(const bool &silent) {
 			for (actor &i : actors) {
 				i.r = races.Find(i.race_id);
 				i.c = careers.Find(i.career_id);
-<<<<<<< HEAD
 				for (uint8_t j = 0; j < i.spell_count_; ++j)
 					i.spellbook_[j].s_ = spells.Find(i.spellbook_[j].id_);
-=======
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 			}
 		} else if (ReadTag(tag, parties, silent)) {
 			for ( party &i : parties) {
@@ -186,10 +171,7 @@ void xbfq::Write(const bool &silent) {
 				  << "\n\n\n";
 	}
 
-<<<<<<< HEAD
 	std::cout << "ABOUT TO WRITE THE STUFF" << std::endl;
-=======
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 	/* Organize data. */
 	RestructureIDs();
 

@@ -10,7 +10,6 @@
 #include "pstr.h"
 
 
-<<<<<<< HEAD
 struct actor;
 int main();
 /*******************************************************************************
@@ -20,16 +19,6 @@ int main();
 *******************************************************************************/
 struct spell_base {
 	static const uint16_t kSpellBaseSize = 7;
-=======
-int main();
-/*******************************************************************************
-*                                                                              *
-*                                     Spell                                    *
-*                                                                              *
-*******************************************************************************/
-struct spell {
-	static const uint16_t kSpellSize = 11;
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 	static const uint8_t kMaxEffects = 8;
 
 	pstr<uint8_t> name;
@@ -37,7 +26,6 @@ struct spell {
 	const uint32_t ID() const;
 	const size_t Size() const;
 
-<<<<<<< HEAD
 	effect* Add(const effect *e);
 	bool Remove(const int &i);
 
@@ -88,17 +76,11 @@ struct spell {
 	bool AddExperience(const uint32_t &e);
 	bool Cast(const actor *caster, const actor *target);
 
-=======
-	effect_profile* Add(const effect_profile *e);
-	bool Remove(const int &i);
-
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 	spell& operator=(const spell &s);
 	friend std::ostream& operator<<(std::ostream &out, const spell &s);
 	friend std::istream& operator>>(std::istream &in, spell &s);
 
 	spell()
-<<<<<<< HEAD
 		: s_(NULL)
 		, id_(0)
 		, experience_(0) { }
@@ -106,23 +88,6 @@ struct spell {
 		: s_(s)
 		, id_(s->id_)
 		, experience_(e) { }
-=======
-		: name("Fart")
-		, id_(0)
-		, experience_(0)
-		, effect_count_(0)
-		, effects_(NULL) { }
-	spell(const uint32_t &i, const char *n, const std::initializer_list<effect_profile> &ep)
-		: name(n)
-		, id_(i)
-		, experience_(0)
-		, effect_count_(ep.size()) {
-			effects_ = new effect_profile[effect_count_];
-			for (int i = 0; i < effect_count_; ++i) {
-				effects_[i] = ep.begin()[i];
-			}
-		}
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 	~spell() { }
 
 	private:
@@ -130,13 +95,7 @@ struct spell {
 		friend class xbfq;
 		friend class battle;
 		friend int main();
-<<<<<<< HEAD
 
 		const spell_base *s_;
 		uint32_t id_, experience_;
-=======
-		uint32_t id_, experience_;
-		uint8_t effect_count_;
-		effect_profile *effects_;
->>>>>>> fe6d835ca773d27af637d99b81826ec41bb45cdf
 };
