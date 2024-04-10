@@ -119,7 +119,6 @@ actor& actor::operator=(const actor &a) {
 std::ostream& operator<<(std::ostream &out, const actor &a) {
 	uint16_t actor_size = a.Size();
 
-	std::cout << "WRITING ACTOR" << std::endl;
 	out.write(reinterpret_cast<const char *>(&actor_size), 2);
 	out.write(reinterpret_cast<const char *>(&a.id_), 4);
 	out << a.name;

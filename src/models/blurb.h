@@ -49,7 +49,7 @@ struct blurb {
 			const std::initializer_list<uint8_t> &c)
 		: message(m)
 		, id_(i)
-		, type_(t)		{
+		, type_(t) {
 			// These extra steps are unnecessary with C++17 (call .data()).
 			char *tmp = new char[c.size()];
 			std::copy(c.begin(), c.end(), tmp);
