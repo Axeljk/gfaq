@@ -10,12 +10,15 @@
 const uint32_t spell_base::ID() const {
 	return id_;
 }
+const dynarray<effect> spell_base::Effects() const {
+	return effects_;
+}
 const size_t spell_base::Size() const {
-	return kSpellBaseSize + name.Size() + (effect::kEffectSize * effect_count_);
+	return kSpellBaseSize + name.Size() + effects_.Size();
 }
 
 effect* spell_base::Add(const effect *e) {
-	if (effect_count_ >= kMaxEffects)
+/*	if (effect_count_ >= kMaxEffects)
 		return NULL;
 
 	effect *tmp_effects = new effect[effect_count_ + 1];
@@ -25,10 +28,11 @@ effect* spell_base::Add(const effect *e) {
 	effects_ = tmp_effects;
 	effect_count_++;
 
-	return (effects_ + effect_count_ - 1);
+	return (effects_ + effect_count_ - 1); */
+	return effects_.begin();
 }
 bool spell_base::Remove(const int &i) {
-	if (effect_count_ <= 0)
+/*	if (effect_count_ <= 0)
 		return false;
 
 	effect *tmp_effects = new effect[effect_count_ - 1];
@@ -36,7 +40,7 @@ bool spell_base::Remove(const int &i) {
 	std::copy(effects_ + i + 1, effects_ + effect_count_, tmp_effects + i - 1);
 	delete[] effects_;
 	effects_ = tmp_effects;
-	effect_count_--;
+	effect_count_--;*/
 
 	return true;
 }
@@ -44,8 +48,7 @@ bool spell_base::Remove(const int &i) {
 spell_base& spell_base::operator=(const spell_base &s) {
 	if (this != &s) {
 		id_ = s.id_;
-		effect_count_ = s.effect_count_;
-		std::copy(s.effects_, s.effects_ + effect_count_, effects_);
+		effects_ = s.effects_;
 	}
 
 	return *this;
@@ -56,9 +59,7 @@ std::ostream& operator<<(std::ostream &out, const spell_base &s) {
 	out.write(reinterpret_cast<const char *>(&spell_base_size), 2);
 	out << s.name;
 	out.write(reinterpret_cast<const char *>(&s.id_), 4);
-	out.write(reinterpret_cast<const char *>(&s.effect_count_), 1);
-	for (uint8_t i = 0; i < s.effect_count_; ++i)
-		out << s.effects_[i];
+	out << s.effects_;
 
 	return out;
 }
@@ -68,10 +69,7 @@ std::istream& operator>>(std::istream &in, spell_base &s) {
 	in.read(reinterpret_cast<char *>(&spell_base_size), 2);
 	in >> s.name;
 	in.read(reinterpret_cast<char *>(&s.id_), 4);
-	in.read(reinterpret_cast<char *>(&s.effect_count_), 1);
-	s.effects_ = new effect[s.effect_count_];
-	for (uint8_t i = 0; i < s.effect_count_; ++i)
-		in >> s.effects_[i];
+	in >> s.effects_;
 
 	return in;
 }

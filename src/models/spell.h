@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <iosfwd>
 
+#include "dynarray.h"
 #include "effect.h"
 #include "pstr.h"
 
@@ -18,12 +19,13 @@ int main();
 *                                                                              *
 *******************************************************************************/
 struct spell_base {
-	static const uint16_t kSpellBaseSize = 7;
+	static const uint16_t kSpellBaseSize = 6;
 	static const uint8_t kMaxEffects = 8;
 
 	pstr<uint8_t> name;
 
 	const uint32_t ID() const;
+	const dynarray<effect> Effects() const;
 	const size_t Size() const;
 
 	effect* Add(const effect *e);
@@ -35,18 +37,11 @@ struct spell_base {
 
 	spell_base()
 		: name("Fart")
-		, id_(0)
-		, effect_count_(0)
-		, effects_(NULL) { }
-	spell_base(const uint32_t &i, const char *n, const std::initializer_list<effect> &ep)
+		, id_(0) { }
+	spell_base(const uint32_t &i, const char *n, std::initializer_list<effect> e)
 		: name(n)
 		, id_(i)
-		, effect_count_(ep.size()) {
-			effects_ = new effect[effect_count_];
-			for (int i = 0; i < effect_count_; ++i) {
-				effects_[i] = ep.begin()[i];
-			}
-		}
+		, effects_(e) { }
 	~spell_base() { }
 
 	private:
@@ -56,8 +51,7 @@ struct spell_base {
 		friend class battle;
 		friend int main();
 		uint32_t id_;
-		uint8_t effect_count_;
-		effect *effects_;
+		dynarray<effect> effects_;
 };
 
 /*******************************************************************************
