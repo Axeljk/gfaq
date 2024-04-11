@@ -103,8 +103,12 @@ void xbfq::ReadAll(const bool &silent) {
 			for (actor &i : actors) {
 				i.r = races.Find(i.race_id);
 				i.c = careers.Find(i.career_id);
-				for (uint8_t j = 0; j < i.spell_count_; ++j)
-					i.spellbook_[j].s_ = spells.Find(i.spellbook_[j].id_);
+				for (spell &j : i.spellbook_) {
+					j.s_ = spells.Find(j.ID());
+
+					for (effect &k : j.s_->effects_)
+						k.e = effects.Find(k.ID());
+				}
 			}
 		} else if (ReadTag(tag, parties, silent)) {
 			for ( party &i : parties) {

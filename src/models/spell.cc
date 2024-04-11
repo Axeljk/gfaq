@@ -100,6 +100,7 @@ bool spell::Cast(const actor *caster, const actor *target) {
 spell& spell::operator=(const spell &s) {
 	if (this != &s) {
 		s_ = s.s_;
+		id_ = s.id_;
 		experience_ = s.experience_;
 	}
 

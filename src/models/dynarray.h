@@ -19,11 +19,11 @@ template <class t> struct dynarray {
 	t* end() const;
 
 	dynarray& operator=(const dynarray<t> &d);
-	t operator[](unsigned int &i) const {
-		return data_[i];
+	t operator[](const int &i) const {
+		return this->data_[i];
 	}
-	t operator[](unsigned int &i) {
-		return data_[i];
+	t & operator[](const int &i) {
+		return this->data_[i];
 	}
 	friend std::ostream& operator<<(std::ostream &out, const dynarray<t> &d) {
 		out.write(reinterpret_cast<const char *>(&d.size_), sizeof(size_));

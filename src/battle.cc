@@ -263,17 +263,17 @@ actor* battle::GetTarget(actor *p, motive &m, int &i) {
 spell* battle::GetSpell(actor *p, motive &m, int &i) {
 	int selection = -1;
 
-	while (selection > p->spell_count_ || selection < 0) {
+	while (selection > p->spellbook_.Length() || selection < 0) {
 		NewScreen();
 		CharGen::Header(p);
 		std::cout << "\n\tSelect Spell:\n\t  ";
-		for (int i = 0; i < p->spell_count_; ++i)
+		for (int i = 0; i < p->spellbook_.Length(); ++i)
 			std::cout << i << ") " <<p->spellbook_[i].SpellBase()->name << "\n\t  ";
-		std::cout << static_cast<int>(p->spell_count_) << ") Go back\n\t  ";
+		std::cout << static_cast<int>(p->spellbook_.Length()) << ") Go back\n\t  ";
 		std::cin >> selection;
-		if (selection < p->spell_count_ && selection >= 0)
+		if (selection < p->spellbook_.Length() && selection >= 0)
 			return &(p->spellbook_[selection]);
-		else if (selection == p->spell_count_) {
+		else if (selection == p->spellbook_.Length()) {
 			i = -1;
 			return NULL;
 		}
