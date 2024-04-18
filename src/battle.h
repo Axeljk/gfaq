@@ -30,10 +30,12 @@ struct battle {
 	int Battle();
 	void BattleStatus();
 	void ActionReport();
+	bool Cast(motive &m);
 	void PlayerInput(actor *p, motive &m);
 	actor* GetTarget(actor *p, motive &m, int &i);
 	spell* GetSpell(actor *p, motive &m, int &i);
-	double StatPercent(stat_base *a, stat_base *b);
+	int Base128Comparison(const uint32_t &numerator,
+						  const uint32_t &demoninator);
 	void LevelStat(const actor &act, const uint32_t x, stat_aux *a, stat_aux *b);
 	void EnCost(actor *a, const uint32_t &cost);
 	double XPMultiplier(const int &x);

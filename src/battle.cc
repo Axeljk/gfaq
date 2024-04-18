@@ -3,7 +3,7 @@
 #include <cstdint>			// uint32_t.
 #include <cstdlib>			// srand.
 #include <ctime>			// time.
-#include <cmath>			// log, asinh.
+#include <cmath>			// log, asinh, tanh.
 #include <algorithm>		// sort.
 #include <iostream>			// cout.
 #include <iomanip>			// formatting cout.
@@ -21,8 +21,8 @@
 bool testfunct(motive &i, motive &j) { return ( i.perpetrator->as > j.perpetrator->as); }
 int battle::Attack(motive &m) {
 	uint32_t damage = (m.perpetrator->ad.get(false) >> 3);
-	double percent = static_cast<double>(1u + std::rand()/((RAND_MAX + 1u)/128u)) / 128.0 * 100.0;
-	double percent2 = 128u * StatPercent(&m.perpetrator->ac, &m.target->re);
+	int percent = std::rand() % 128;
+	int percent2 = Base128Comparison(m.perpetrator->ac.get(), m.target->re.get());
 	bool defending = (m.target_motive->action == actions::kDefend);
 	bool hit = (percent < percent2);
 	uint32_t health_log = 0;
@@ -33,7 +33,8 @@ int battle::Attack(motive &m) {
 		return 0;
 	}
 	EnCost(m.perpetrator, m.perpetrator->ad);
-//	std::cout << std::setprecision(0) << percent << "%/" << percent2 << "% (" << StatPercent(&m.perpetrator->ac, &m.target->re) << ")\t";
+	std::cout << m.perpetrator->name << ": " << percent << " random number; " << percent2 << " from stats." << std::endl;
+
 	if (hit) {
 		if (defending) {
 			damage = damage >> 1;
@@ -185,6 +186,7 @@ void battle::ActionReport() {
 
 	NewScreen();
 	for (int i = 0; i < motives_count; ++i) {
+
 		if (motives[i].perpetrator->hp > 0) {
 			motives[i].damage = 0;
 			motives[i].times_attacking = 0;
@@ -192,24 +194,49 @@ void battle::ActionReport() {
 			motives[i].times_missed = 0;
 			motives[i].dodged = false;
 
-			if (motives[i].action == actions::kIdle) {
-				motives[i].perpetrator->en.mod(motives[i].perpetrator->en.get_max() >> 2);
-			} else if (motives[i].action == actions::kDefend) {
-				motives[i].perpetrator->en.mod(motives[i].perpetrator->en.get_max() >> 1);
-			} else if (motives[i].action == actions::kAttack) {
-				double attacks = static_cast<double>(motives[i].perpetrator->as % base_speed);
-				double bonus_attack = std::rand() / ((RAND_MAX + 1u) / static_cast<double>(base_speed));
+			switch(motives[i].action) {
+				case (actions::kIdle):
+					motives[i].perpetrator->en.mod(motives[i].perpetrator->en.get_max() >> 2);
+					break;
+				case (actions::kDefend):
+					motives[i].perpetrator->en.mod(motives[i].perpetrator->en.get_max() >> 1);
+					break;
+				case (actions::kAttack):
+					{
+					double attacks = static_cast<double>(motives[i].perpetrator->as % base_speed);
+					double bonus_attack = std::rand() / ((RAND_MAX + 1u) / static_cast<double>(base_speed));
 
-				motives[i].times_attacking = motives[i].perpetrator->as / base_speed + (attacks >= bonus_attack);
-				for (uint32_t j = 0; j < motives[i].times_attacking; ++j)
-					Attack(motives[i]);
+					motives[i].times_attacking = motives[i].perpetrator->as / base_speed + (attacks >= bonus_attack);
+					for (uint32_t j = 0; j < motives[i].times_attacking; ++j)
+						Attack(motives[i]);
+					break;
+					}
+				case (actions::kCast):
+					EnCost(motives[i].perpetrator, 0x08000000);
+					Cast(motives[i]);
+					break;
 			}
 		}
-
-//		std::cout << "dam: " << motives[i].damage << ", attacks: " << int(motives[i].times_attacking) << ", hit/miss: " << int(motives[i].times_hit) << '/' << int(motives[i].times_missed) << '\n';
-		RandomBlurb(motives + i);
 	}
+
 	Pause();
+}
+bool battle::Cast(motive &m) {
+	uint32_t spell_cost = m.spell_casted->Cost();
+	int percent = std::rand() % 128;
+	int percent2 = Base128Comparison(m.perpetrator->en.get(), spell_cost);
+	bool success = (percent < percent2);
+
+	if (success) {
+		for (effect &i : m.spell_casted->SpellBase()->Effects()) {
+			// Run through each effect.
+			// Execute(perp, target, effect)?
+		}
+	} else {
+		m.dodged = true;
+	}
+
+	return success;
 }
 void battle::PlayerInput(actor *p, motive &m) {
 	int input = -1;
@@ -248,7 +275,7 @@ actor* battle::GetTarget(actor *p, motive &m, int &i) {
 		CharGen::Header(p);
 		std::cout << "\n\tTarget:\n\t  ";
 		for (int i = 0; i < enemies->count; ++i)
-			std::cout << i << ") " << enemies->members[i]->name << "\n\t  ";
+			std::cout << i << ") " << enemies->members[i]->name << '\t' << Base128Comparison(p->ac.get(), enemies->members[i]->re.get()) * 100 / 128 << "%\n\t  ";
 		std::cout << static_cast<int>(enemies->count) << ") Go back\n\t  ";
 		std::cin >> selection;
 		if (selection < enemies->count && selection >= 0)
@@ -280,8 +307,17 @@ spell* battle::GetSpell(actor *p, motive &m, int &i) {
 	}
 	return NULL;
 }
-double battle::StatPercent(stat_base *a, stat_base *b) {
-	return (static_cast<double>(a->get()) - static_cast<double>(b->get())) / (static_cast<double>(a->get()) + static_cast<double>(b->get())) / 2.0 + 0.5;
+int battle::Base128Comparison(const uint32_t &numerator,
+							  const uint32_t &demoninator) {
+	const double kNumberScale = 1.5;
+	const double kPercentBaseline = 0.2;
+
+	double n = static_cast<double>(numerator);
+	double d = static_cast<double>(demoninator);
+	double percent = (n - d) / (n + d) * kNumberScale + kPercentBaseline;
+	double result = tanh(percent) / 2.0 + 0.5;
+
+	return static_cast<int>(128.0 * result);
 }
 void battle::LevelStat(const actor &act, const uint32_t x, stat_aux *a, stat_aux *b) {
 	uint32_t foo = a->dom()->Offset() + (a->rec()->Offset() >> 1) - a->Offset();

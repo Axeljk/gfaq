@@ -10,8 +10,8 @@
 *                                   Motive                                     *
 *                                                                              *
 *******************************************************************************/
-
 struct actor;
+struct spell;
 
 struct motive {
 	actor *perpetrator, *target;
@@ -22,6 +22,7 @@ struct motive {
 	uint8_t times_hit;
 	uint8_t times_missed;
 	bool dodged;
+	spell* spell_casted;
 
 	motive& operator=(const motive &m) {
 		if (this != &m) {
@@ -34,6 +35,7 @@ struct motive {
 			times_hit = m.times_hit;
 			times_missed = m.times_missed;
 			dodged = m.dodged;
+			spell_casted = m.spell_casted;
 		}
 
 		return *this;
@@ -47,7 +49,8 @@ struct motive {
 		, times_attacking(0)
 		, times_hit(0)
 		, times_missed(0)
-		, dodged(false) { }
+		, dodged(false)
+		, spell_casted(NULL) { }
 	motive(actor *p, actor *t, motive *tm, const int &a) 
 		: perpetrator(p)
 		, target(t)
@@ -57,7 +60,8 @@ struct motive {
 		, times_attacking(0)
 		, times_hit(0)
 		, times_missed(0)
-		, dodged(false) { }
+		, dodged(false)
+		, spell_casted(NULL) { }
 	~motive() { }
 };
 
