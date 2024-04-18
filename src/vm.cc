@@ -59,6 +59,9 @@ bool vm::Execute(motive *perp, const uint8_t *input) {
 			case (kCheckStat):
 				Push4_(GetStat_(GetActor_(perp))->get());
 				break;
+			case (kDamageStat):
+				Push4_(DamageStat_(GetActor_(perp)));
+				break;
 			case (kCheckDamage):
 				Push4_(perp->damage);
 				break;
@@ -166,7 +169,7 @@ const aspect* vm::GetAspect_(actor *a) {
 	else
 		return a->vice;
 }
-const stat_base* vm::GetStat_(actor *a) {
+stat_base* vm::GetStat_(actor *a) {
 //	return reinterpret_cast<stat_base *>(a + Pop4_());
 
 	switch (Pop4_()) {
@@ -200,4 +203,9 @@ const stat_base* vm::GetStat_(actor *a) {
 	}
 
 	return &(a->str);
+}
+uint32_t vm::DamageStat_(actor *a) {
+	stat_base *tmp = GetStat_(a);
+	tmp->Damage(Pop4_());
+	return tmp->get();
 }

@@ -34,7 +34,10 @@ struct vm {
 		kCheckDamage,
 		kCheckAttacks,
 		kCheckHits,
-		kCheckMisses
+		kCheckMisses,
+		kDamageStat,
+		kModStat,
+		kModByElement
 	};
 	enum Operations {
 		kEqual,
@@ -86,5 +89,6 @@ struct vm {
 		motive* GetMotive_(motive *perp);
 		actor* GetActor_(motive *perp);
 		const aspect* GetAspect_(actor *a);
-		const stat_base* GetStat_(actor *a);
+		stat_base* GetStat_(actor *a);
+		uint32_t DamageStat_(actor *a);
 };

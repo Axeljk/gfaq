@@ -62,6 +62,9 @@ std::istream& operator>>(std::istream &in, effect_base &e) {
 const effect_base* effect::EffectBase() const {
 	return e;
 }
+const uint32_t effect::ID() const {
+	return effect_id;
+}
 const size_t effect::Size() const {
 	return kEffectSize;
 }
