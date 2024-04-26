@@ -241,7 +241,7 @@ void stat_aux::set_max(const uint32_t &v) {
 }
 
 const uint32_t stat_aux::Offset() const {
-	return base_;
+	return base_ + *dominant_ + (*recessive_ >> 1);
 }
 void stat_aux::Damage(const uint32_t &v) {
 	if (value_ > v) {
